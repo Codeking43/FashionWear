@@ -17,289 +17,344 @@
 
     <!-- Author Information -->
     <meta name="author" content="NKOMBE MATHIAS">
+ <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 
-    <title>Fashion Website | Monfung</title>
-  </head>
-  <body>
+    <link rel="stylesheet" href="styles.css" />
+    <title>Web Design Mastery | Mon'sa</title>
+    <style>
+        /* Basic styling for cart display */
+        .cart {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            background: white;
+            padding: 10px;
+            border: 1px solid #ccc;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: none;
+            width: 300px;
+            z-index: 1000;
+        }
+
+        .cart h3 {
+            margin: 0;
+        }
+
+        .cart-table {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .cart-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #ccc;
+        }
+
+        #cart-icon {
+            position: relative;
+        }
+
+        .item-count {
+            position: absolute;
+            top: -15px;
+            right: -10px;
+            background-color:transparent;
+            color: rgb(218, 20, 20);
+            border-radius: 20%;
+            padding: 2px 2px;
+            font-size: 10px;
+        }
+    </style>
+</head>
+<body>
     <div class="header__bar">Free Shipping on Orders Over $50</div>
     <nav class="section__container nav__container">
-      <a href="#" class="nav__logo">Fashion</a>
-      <ul class="nav__links">
-        <li class="link"><a href="#">HOME</a></li>
-        <li class="link"><a href="#">SHOP</a></li>
-        <li class="link"><a href="#">PAGES</a></li>
-        <li class="link"><a href="#">BLOG</a></li>
-        <li class="link"><a href="#">LOOKBOOK</a></li>
-      </ul>
-      <div class="nav__icons">
-        <span><i class="ri-shield-user-line"></i></span>
-        <span><i class="ri-search-line"></i></span>
-        <span><i class="ri-shopping-bag-2-line"></i></span>
-      </div>
+        <a href="#" class="nav__logo">Fashion</a>
+        <ul class="nav__links">
+            <li class="link"><a href="#">HOME</a></li>
+            <li class="link"><a href="#">SHOP</a></li>
+            <li class="link"><a href="#">PAGES</a></li>
+            <li class="link"><a href="#">BLOG</a></li>
+            <li class="link"><a href="#">LOOKBOOK</a></li>
+        </ul>
+        <div class="nav__icons">
+            <span><i class="ri-shield-user-line"></i></span>
+            <span><i class="ri-search-line"></i></span>
+            <span id="cart-icon" class="w3-large">
+                <i class="ri-shopping-bag-2-line"></i>
+                <span class="item-count" id="item-count">0</span>
+            </span>
+        </div>
     </nav>
 
-    <header>
-      <div class="section__container header__container">
-        <div class="header__content">
-          <p>EXTRA 55% OFF IN SPRING SALE</p>
-          <h1>Discover & Shop<br />The Trend Ss19</h1>
-          <button class="btn">SHOP NOW</button>
+    <!-- Cart Display -->
+    <div class="cart w3-container w3-black w3-card-4" id="cart" >
+        <span class="w3-right" onclick="document.getElementById('cart').style.display='none';  ">x</span>
+        <h3><i class="ri-shopping-bag-2-line"></i></h3>
+        <table class="w3-table cart-table w3-card-4 w3-white w3-container  w3-padding">
+           
+            <tbody id="cart-items"></tbody>
+        </table>
+      <div class="w3-container  w3-blue-gray">
+        <div class="cart-footer">
+            <p>Total:</p>
+            <p>$<span id="cart-total">0.00</span></p>
         </div>
-        <div class="header__image">
-          <img src="assets/header.png" alt="header" />
+        <br>
+        <div class="cart-footer">
+            <p>Shipping:</p>
+            <p>$<span id="shipping-fee">5.00</span></p>
         </div>
+        <div class="cart-footer">
+            <h4>Final Total:</h4>
+            <h4>$<span id="final-total">0.00</span></h4>
+        </div>
+      
+        <!--Payment parameter -->
+        <div class="w3-container" id="pay" style="display: none;">
+            <br><br>
+            <span class="w3-right w3-tag" onclick="  document.getElementById('pay').style.display='none';">x</span>
+            <span class="w3-wide w3-center">PAYMENT METHOD </span>
+            <hr>  
+           <div class="w3-container w3-text-white">
+            <i class='bx bxl-paypal w3-large   w3-jumbo w3-border'></i>
+            <i class='bx bx-credit-card-alt w3-large  w3-jumbo w3-border w3-right'></i>
+           </div>
+           <br>
+           <p class="w3-black w3-wide w3-padding w3-center">Shipping Detail</p>
+           <br>
+           <input type="text" name="userdetail"class="w3-input" placeholder="Receiver Name">
+           <br>
+           <input type="tell" name="userdetail"class="w3-input" placeholder="Username">
+            <br><br>
+            <label for="Tracking Code">Tracking Code</label>
+            <span class="w3-btn w3-border" id="trackId"></span>
+            <br>
+            <button class="w3-gray w3-btn" onclick="copyToClipboard()">Copy Text</button>
+            <br>
+        </div>
+   
       </div>
+      <button class="w3-btn w3-blue" style="width:100%;"id="pay-btn">Purchase</button>
+      <script>
+    document.getElementById('pay-btn').addEventListener('click',()=>{
+        document.getElementById('pay').style.display="block";
+    })
+                    function generateBookingCode() {
+                    // Generate 4 random numbers
+                    let numbers = Math.floor(1000 + Math.random() * 9000); // Ensures a 4-digit number
+
+                    // Generate 2 random alphabetic characters
+                    let letters = '';
+                    let alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+                    for (let i = 0; i < 2; i++) {
+                        letters += alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+                    }
+
+                    // Combine numbers and letters to form the booking code
+                    return `${numbers}${letters}`;
+                }
+
+                // Example usage:
+                let bookingCode = generateBookingCode();
+                document.getElementById('trackId').innerHTML=bookingCode;
+                console.log(bookingCode);
+
+                //copy Trackingcode
+                function copyToClipboard() {
+    // Select the text in the element
+    let textElement = document.getElementById("trackId");
+
+    // Create a temporary text area to hold the text
+    let tempTextArea = document.createElement("textarea");
+    tempTextArea.value = textElement.textContent;
+    document.body.appendChild(tempTextArea);
+
+    // Select the text inside the temporary textarea
+    tempTextArea.select();
+    tempTextArea.setSelectionRange(0, 99999); // For mobile devices
+
+    // Copy the text
+    document.execCommand("copy");
+
+    // Remove the temporary textarea
+    document.body.removeChild(tempTextArea);
+
+    alert("Text copied: " + tempTextArea.value);
+    window.setTimeout(()=>{
+        document.getElementById('cart').style.display="none";
+    }),2000
+}
+
+
+      </script>
+    </div>
+
+    <header>
+        <div class="section__container header__container">
+            <div class="header__content">
+                <p>EXTRA 55% OFF IN SPRING SALE</p>
+                <h1>Discover & Shop<br />The Trend Ss19</h1>
+                <button class="btn">SHOP NOW</button>
+            </div>
+            <div class="header__image">
+                <img src="assets/header.png" alt="header" />
+            </div>
+        </div>
     </header>
 
-    <section class="section__container collection__container">
-      <img src="assets/collection.jpg" alt="collection" />
-      <div class="collection__content">
-        <h2 class="section__title">New Collection</h2>
-        <p>#35 ITEMS</p>
-        <h4>Available on Store</h4>
-        <button class="btn">SHOP NOW</button>
-      </div>
-    </section>
-
     <section class="section__container sale__container">
-      <h2 class="section__title">On Sale</h2>
-      <div class="sale__grid">
-        <div class="sale__card">
-          <img src="assets/sale-1.jpg" alt="sale" />
-          <div class="sale__content">
-            <p class="sale__subtitle">MAN OUTERWEAR</p>
-            <h4 class="sale__title">sale <span>40%</span> off</h4>
-            <p class="sale__subtitle">- DON'T MISS -</p>
-            <button class="btn sale__btn">SHOP NOW</button>
-          </div>
-        </div>
-        <div class="sale__card">
-          <img src="assets/sale-2.jpg" alt="sale" />
-          <div class="sale__content">
-            <p class="sale__subtitle">WOMAN T-SHIRT</p>
-            <h4 class="sale__title">sale <span>25%</span> off</h4>
-            <p class="sale__subtitle">- DON'T MISS -</p>
-            <button class="btn sale__btn">SHOP NOW</button>
-          </div>
-        </div>
-        <div class="sale__card">
-          <img src="assets/sale-3.jpg" alt="sale" />
-          <div class="sale__content">
-            <p class="sale__subtitle">JACKETS</p>
-            <h4 class="sale__title">sale <span>20%</span> off</h4>
-            <p class="sale__subtitle">- DON'T MISS -</p>
-            <button class="btn sale__btn">SHOP NOW</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section__container musthave__container">
-      <h2 class="section__title">Must Have</h2>
-      <div class="musthave__nav">
-        <a href="#">ALL</a>
-        <a href="#">MAN</a>
-        <a href="#">WOMEN</a>
-        <a href="#">BAG</a>
-        <a href="#">SHOES</a>
-      </div>
-      <div class="musthave__grid">
-        <div class="musthave__card">
-          <img src="assets/musthave-1.png" alt="must have" />
-          <h4>Basic long sleeve T-shirt</h4>
-          <p><del>$45.00</del> $75.00</p>
-        </div>
-        <div class="musthave__card">
-          <img src="assets/musthave-2.png" alt="must have" />
-          <h4>Ribbed T-shirt with buttons</h4>
-          <p><del>$45.00</del> $75.00</p>
-        </div>
-        <div class="musthave__card">
-          <img src="assets/musthave-3.png" alt="must have" />
-          <h4>Jacket withside strips</h4>
-          <p><del>$45.00</del> $75.00</p>
-        </div>
-        <div class="musthave__card">
-          <img src="assets/musthave-4.png" alt="must have" />
-          <h4>High-heel tubular sandals</h4>
-          <p><del>$45.00</del> $75.00</p>
-        </div>
-        <div class="musthave__card">
-          <img src="assets/musthave-5.png" alt="must have" />
-          <h4>Coral fabric belt bag</h4>
-          <p><del>$45.00</del> $75.00</p>
-        </div>
-        <div class="musthave__card">
-          <img src="assets/musthave-6.png" alt="must have" />
-          <h4>Piggy skater slogan T-shirt</h4>
-          <p><del>$45.00</del> $75.00</p>
-        </div>
-        <div class="musthave__card">
-          <img src="assets/musthave-7.png" alt="must have" />
-          <h4>White platform boots</h4>
-          <p><del>$45.00</del> $75.00</p>
-        </div>
-        <div class="musthave__card">
-          <img src="assets/musthave-8.png" alt="must have" />
-          <h4>Sweater vest with sleeves</h4>
-          <p><del>$45.00</del> $75.00</p>
-        </div>
-        <div class="musthave__card">
-          <img src="assets/musthave-9.png" alt="must have" />
-          <h4>Slim fit pants</h4>
-          <p><del>$45.00</del> $75.00</p>
-        </div>
-        <div class="musthave__card">
-          <img src="assets/musthave-10.png" alt="must have" />
-          <h4>Gray backpack</h4>
-          <p><del>$45.00</del> $75.00</p>
-        </div>
-        <div class="musthave__card">
-          <img src="assets/musthave-11.png" alt="must have" />
-          <h4>Neon sweatshirt</h4>
-          <p><del>$45.00</del> $75.00</p>
-        </div>
-        <div class="musthave__card">
-          <img src=" " alt="must have" />
-          <h4>Hooded nautical jacket</h4>
-          <p><del>$45.00</del> $75.00</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="news">
-      <div class="section__container news__container">
-        <h2 class="section__title">Latest News</h2>
-        <div class="news__grid">
-          <div class="news__card">
-            <img src="assets/news-1.jpg" alt="news" />
-            <div class="news__details">
-              <p>
-                FASHION <i class="ri-checkbox-blank-circle-fill"></i>
-                <span>JAMES SIMSON</span>
-                <i class="ri-checkbox-blank-circle-fill"></i> FEB 2, 2019
-              </p>
-              <h4>Seasonal Trends</h4>
-              <hr />
-              <p>
-                Discuss the latest fashion trends for the current season and
-                offer tips and ideas on how to incorporate these trends into
-                your wardrobe.
-              </p>
-              <a href="#"><i class="ri-arrow-right-line"></i></a>
+        <h2 class="section__title">On Sale</h2>
+        <div class="sale__grid">
+            <div class="sale__card" data-name="MAN OUTERWEAR" data-price="30">
+                <img src="assets/sale-1.jpg" alt="sale" />
+                <div class="sale__content">
+                    <p class="sale__subtitle">MAN OUTERWEAR</p>
+                    <h4 class="sale__title">sale <span>40%</span> off</h4>
+                    <p class="sale__subtitle">- DON'T MISS -</p>
+                    <button class="btn sale__btn add-to-cart">ADD TO CART</button>
+                </div>
             </div>
-          </div>
-          <div class="news__card">
-            <img src="assets/news-2.jpg" alt="news" />
-            <div class="news__details">
-              <p>
-                TRENDS <i class="ri-checkbox-blank-circle-fill"></i>
-                <span>JAMES SIMSON</span>
-                <i class="ri-checkbox-blank-circle-fill"></i> APR 15, 2019
-              </p>
-              <h4>Fashion Tips and Advice</h4>
-              <hr />
-              <p>
-                Provide your readers with practical tips and advice on how to
-                dress for different occasions, body types, or style preferences.
-              </p>
-              <a href="#"><i class="ri-arrow-right-line"></i></a>
+            <div class="sale__card" data-name="WOMAN T-SHIRT" data-price="20">
+                <img src="assets/sale-2.jpg" alt="sale" />
+                <div class="sale__content">
+                    <p class="sale__subtitle">WOMAN T-SHIRT</p>
+                    <h4 class="sale__title">sale <span>25%</span> off</h4>
+                    <p class="sale__subtitle">- DON'T MISS -</p>
+                    <button class="btn sale__btn add-to-cart">ADD TO CART</button>
+                </div>
             </div>
-          </div>
-          <div class="news__card">
-            <img src="assets/news-3.jpg" alt="news" />
-            <div class="news__details">
-              <p>
-                STYLE <i class="ri-checkbox-blank-circle-fill"></i>
-                <span>JAMES SIMSON</span>
-                <i class="ri-checkbox-blank-circle-fill"></i> JUL 22, 2019
-              </p>
-              <h4>Sustainable Fashion</h4>
-              <hr />
-              <p>
-                Cover the growing trend of eco-conscious fashion and explore the
-                various ways to be sustainable in your fashion choices.
-              </p>
-              <a href="#"><i class="ri-arrow-right-line"></i></a>
+            <div class="sale__card" data-name="JACKETS" data-price="40">
+                <img src="assets/sale-3.jpg" alt="sale" />
+                <div class="sale__content">
+                    <p class="sale__subtitle">JACKETS</p>
+                    <h4 class="sale__title">sale <span>20%</span> off</h4>
+                    <p class="sale__subtitle">- DON'T MISS -</p>
+                    <button class="btn sale__btn add-to-cart">ADD TO CART</button>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
     </section>
-
-    <section class="section__container brands__container">
-      <div class="brand__image">
-        <img src="assets/brand-1.png" alt="brand" />
-      </div>
-      <div class="brand__image">
-        <img src="assets/brand-2.png" alt="brand" />
-      </div>
-      <div class="brand__image">
-        <img src="assets/brand-3.png" alt="brand" />
-      </div>
-      <div class="brand__image">
-        <img src="assets/brand-4.png" alt="brand" />
-      </div>
-      <div class="brand__image">
-        <img src="assets/brand-5.png" alt="brand" />
-      </div>
-      <div class="brand__image">
-        <img src="assets/brand-6.png" alt="brand" />
-      </div>
-    </section>
-
-    <hr />
 
     <footer class="section__container footer__container">
-      <div class="footer__col">
-        <h4 class="footer__heading">CONTACT INFO</h4>
-        <p>
-          <i class="ri-map-pin-2-fill"></i> 45,Atakpa Street,Calabar
-        </p>
-        <p><i class="ri-mail-fill"></i>Monfungn@gmail.com</p>
-        <p><i class="ri-phone-fill"></i> (+234) 9044 043 995</p>
-      </div>
-      <div class="footer__col">
-        <h4 class="footer__heading">COMPANY</h4>
-        <p>Home</p>
-        <p>About Us</p>
-        <p>Work With Us</p>
-        <p>Our Blog</p>
-        <p>Terms & Conditions</p>
-      </div>
-      <div class="footer__col">
-        <h4 class="footer__heading">USEFUL LINK</h4>
-        <p>Help</p>
-        <p>Track My Order</p>
-        <p>Men</p>
-        <p>Women</p>
-        <p>Shoes</p>
-      </div>
-      <div class="footer__col">
-        <h4 class="footer__heading">INSTAGRAM</h4>
-        <div class="instagram__grid">
-          <img src="assets/instagram-1.jpg" alt="instagram" />
-          <img src="assets/instagram-2.jpg" alt="instagram" />
-          <img src="assets/instagram-3.jpg" alt="instagram" />
-          <img src="assets/instagram-4.jpg" alt="instagram" />
-          <img src="assets/instagram-5.jpg" alt="instagram" />
-          <img src="assets/instagram-6.jpg" alt="instagram" />
+        <div class="footer__col">
+            <h4 class="footer__heading">CONTACT INFO</h4>
+            <p><i class="ri-map-pin-2-fill"></i> 45, Atakpa Street, Calabar</p>
+            <p><i class="ri-mail-fill"></i> Monfungn@gmail.com</p>
+            <p><i class="ri-phone-fill"></i> (+234) 9044 043 995</p>
         </div>
-      </div>
+        <div class="footer__col">
+            <h4 class="footer__heading">COMPANY</h4>
+            <p>Home</p>
+            <p>About Us</p>
+            <p>Work With Us</p>
+            <p>Our Blog</p>
+            <p>Terms & Conditions</p>
+        </div>
+        <div class="footer__col">
+            <h4 class="footer__heading">USEFUL LINK</h4>
+            <p>Help</p>
+            <p>Track My Order</p>
+            <p>Men</p>
+            <p>Women</p>
+            <p>Shoes</p>
+        </div>
+        <div class="footer__col">
+            <h4 class="footer__heading">INSTAGRAM</h4>
+            <div class="instagram__grid">
+                <img src="assets/instagram-1.jpg" alt="instagram" />
+                <img src="assets/instagram-2.jpg" alt="instagram" />
+                <img src="assets/instagram-3.jpg" alt="instagram" />
+                <img src="assets/instagram-4.jpg" alt="instagram" />
+                <img src="assets/instagram-5.jpg" alt="instagram" />
+                <img src="assets/instagram-6.jpg" alt="instagram" />
+            </div>
+        </div>
     </footer>
 
     <hr />
 
     <div class="section__container footer__bar">
-      <div class="copyright">
-        Copyright © 2024 CodekingDev  Web Design Mastery. All rights reserved.
-      </div>
-      <div class="footer__form">
-        <form>
-          <input type="text" placeholder="ENTER YOUR EMAIL" />
-          <button class="btn" type="submit">SUBSCRIBE</button>
-        </form>
-      </div>
+        <div class="copyright">
+            Copyright © 2024 CodekingDev Web Design Mastery. All rights reserved.
+        </div>
+        <div class="footer__form">
+            <form action="">
+                <input type="text" placeholder="Enter your email" />
+                <button>SUBSCRIBE</button>
+            </form>
+        </div>
     </div>
-  </body>
+
+    <script>
+        const cart = []; // Array to store cart items
+        const cartDisplay = document.getElementById("cart");
+        const cartItems = document.getElementById("cart-items");
+        const cartTotal = document.getElementById("cart-total");
+        const shippingFee = 5.00; // fixed shipping fee
+        const shippingFeeElement = document.getElementById("shipping-fee");
+        const finalTotalElement = document.getElementById("final-total");
+        const itemCountElement = document.getElementById("item-count");
+
+        // Toggle cart visibility
+        document.getElementById("cart-icon").addEventListener("click", () => {
+            cartDisplay.style.display = cartDisplay.style.display === "none" || cartDisplay.style.display === "" ? "block" : "none";
+        });
+
+        // Add to cart functionality
+        const addToCartButtons = document.querySelectorAll(".add-to-cart");
+        addToCartButtons.forEach(button => {
+            button.addEventListener("click", (event) => {
+                const card = event.target.closest(".sale__card");
+                const name = card.getAttribute("data-name");
+                const price = parseFloat(card.getAttribute("data-price"));
+
+                const item = { name, price };
+                cart.push(item);
+                updateCartDisplay();
+            });
+        });
+
+        // Update cart display
+        function updateCartDisplay() {
+            cartItems.innerHTML = ""; // Clear existing items
+            let total = 0;
+            cart.forEach((item, index) => {
+                const listItem = document.createElement("tr");
+                listItem.classList.add("cart-item");
+                listItem.innerHTML = `
+                
+                    <td class="w3-text-teal">${item.name}</td>
+                    <td class="w3-text-teal">$${item.price.toFixed(2)}</td>
+                    <td><span class="remove-item w3-text-red" data-index="${index}">x</span></td>     `;
+                cartItems.appendChild(listItem);
+                total += item.price;
+            });
+            cartTotal.textContent = total.toFixed(2);
+            shippingFeeElement.textContent = shippingFee.toFixed(2);
+            finalTotalElement.textContent = (total + shippingFee).toFixed(2);
+            itemCountElement.textContent = cart.length;
+        }
+
+        // Remove item functionality
+        cartItems.addEventListener("click", (event) => {
+            if (event.target.classList.contains("remove-item")) {
+                const index = event.target.getAttribute("data-index");
+                cart.splice(index, 1); // Remove item from cart
+                updateCartDisplay(); // Update cart display
+            }
+        });
+    </script>
+</body>
 </html>
